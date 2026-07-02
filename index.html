@@ -793,10 +793,39 @@ function closeM(){document.getElementById('modal').classList.remove('open');docu
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
 
 /* FORM */
-document.getElementById('fsend').addEventListener('click',()=>{
-  const n=document.getElementById('fname').value.trim(),e=document.getElementById('femail').value.trim(),m=document.getElementById('fmsg').value.trim();
-  if(!n||!e||!m){alert('Please fill all fields.');return}
-  window.location.href=`mailto:prathibhabugga2400@gmail.com?subject=Portfolio Contact from ${encodeURIComponent(n)}&body=${encodeURIComponent(m+'\n\nFrom: '+n+'\nEmail: '+e)}`;
+/* FORM */
+document.getElementById('fsend').addEventListener('click', async () => {
+  const n = document.getElementById('fname').value.trim();
+  const e = document.getElementById('femail').value.trim();
+  const m = document.getElementById('fmsg').value.trim();
+  if (!n || !e || !m) { alert('Please fill all fields.'); return; }
+
+  const btn = document.getElementById('fsend');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  const res = await fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      access_key: 'a2bed0d8-fab4-49ce-8f91-4370d46a4d03',  // paste your key here
+      name: n,
+      email: e,
+      message: m
+    })
+  });
+
+  const data = await res.json();
+  if (data.success) {
+    alert('Message sent! I\'ll get back to you soon.');
+    document.getElementById('fname').value = '';
+    document.getElementById('femail').value = '';
+    document.getElementById('fmsg').value = '';
+  } else {
+    alert('Something went wrong. Please try again.');
+  }
+  btn.textContent = 'Send Message';
+  btn.disabled = false;
 });
 
 /* (parallax removed — was conflicting with hero console reveal transform) */
